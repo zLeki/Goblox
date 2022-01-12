@@ -3,13 +3,13 @@ package groups
 import (
 	"encoding/json"
 	"errors"
-	"github.com/zLeki/Goblox/account"
-	"github.com/zLeki/Goblox/formatter"
 	"io"
-	"log"
 	"net/http"
 	"sort"
 	"strconv"
+
+	"github.com/zLeki/Goblox/account"
+	"github.com/zLeki/Goblox/formatter"
 )
 
 var client http.Client
@@ -27,12 +27,8 @@ func UserPayout(userID string, groupID int, amount int, acc *account.Account) er
 		  ]
 		}`)
 
-	req := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/groups/"+strconv.Itoa(groupID)+"/payouts", "POST", payload)
-	req.AddCookie(acc.RobloSecurity)
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
+	resp := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/groups/"+strconv.Itoa(groupID)+"/payouts", "POST", payload)
+
 	if resp.StatusCode == 400 {
 		return errors.New("Incorrect userID or the user is new to the group.")
 	} else if resp.StatusCode == 401 {
@@ -41,8 +37,8 @@ func UserPayout(userID string, groupID int, amount int, acc *account.Account) er
 	return nil
 }
 func Groupinfo(ID string) *GroupInfo {
-	req := formatter.FormatRequest(nil, "https://groups.roblox.com/v1/groups/"+ID, "GET", nil)
-	resp, _ := client.Do(req)
+	resp := formatter.FormatRequest(nil, "https://groups.roblox.com/v1/groups/"+ID, "GET", nil)
+
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
@@ -55,9 +51,8 @@ func Groupinfo(ID string) *GroupInfo {
 	return data
 }
 func GetUserRoleInGroup(userid int, groupid int, acc *account.Account) (RoleData, error) {
-	req := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/users/"+strconv.Itoa(userid)+"/groups/roles", "GET", nil)
-	req.AddCookie(acc.RobloSecurity)
-	resp, _ := client.Do(req)
+	resp := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/users/"+strconv.Itoa(userid)+"/groups/roles", "GET", nil)
+
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
@@ -94,18 +89,14 @@ func SendShout(acc *account.Account, groupID string, message string) (int, error
 		  "message": "` + message + `"
 		}
 	`)
-	req := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/groups/"+groupID+"/status", "PATCH", jsondata)
-	req.AddCookie(acc.RobloSecurity)
-	resp, err := client.Do(req)
+	resp := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/groups/"+groupID+"/status", "PATCH", jsondata)
+
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
 
 		}
 	}(resp.Body)
-	if err != nil {
-		log.Fatalf("Error while sending request to roblox servers", err)
-	}
 	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
 		return 0, errors.New("You are not authorized to change the shout")
 	}
@@ -113,8 +104,8 @@ func SendShout(acc *account.Account, groupID string, message string) (int, error
 
 }
 func GetRoles(groupID int) []RoleData {
-	req := formatter.FormatRequest(nil, "https://groups.roblox.com/v1/groups/"+strconv.Itoa(groupID)+"/roles", "GET", nil)
-	resp, _ := client.Do(req)
+	resp := formatter.FormatRequest(nil, "https://groups.roblox.com/v1/groups/"+strconv.Itoa(groupID)+"/roles", "GET", nil)
+
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {

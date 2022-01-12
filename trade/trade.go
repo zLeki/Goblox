@@ -17,9 +17,7 @@ import (
 var client http.Client
 
 func UserIDFromCookie(acc *account.Account) int {
-	req := formatter.FormatRequest(acc, "http://www.roblox.com/mobileapi/userinfo", "GET", nil)
-	req.AddCookie(acc.RobloSecurity)
-	resp, _ := client.Do(req)
+	resp := formatter.FormatRequest(acc, "http://www.roblox.com/mobileapi/userinfo", "GET", nil)
 	var data IDFromCookie
 	err := json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
@@ -27,21 +25,24 @@ func UserIDFromCookie(acc *account.Account) int {
 	}
 	return data.ID
 }
-func GetTrades(tradeType string, acc *account.Account) error {
-	if tradeType != "outbound" || tradeType != "inbound" {
-		return errors.New("Invalid trade type")
+func GetTrades(tradeType string, acc *account.Account) (error, TradeData) {
+	if tradeType != "outbound" || tradeType != "inbound" || tradeType != "inactive" || tradeType != "completed" {
+		return errors.New("Invalid trade type"), TradeData{}
 	}
-	return nil
+	resp := formatter.FormatRequest(acc, "https://trades.roblox.com/v1/trades/"+tradeType+"?sortOrder=Asc&limit=100&_=1641951205618", "GET", nil)
+	var data TradeData
+	err := json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		return err, TradeData{}
+	}
+	return nil, data
 }
 func SendTrade(acc *account.Account, theirUser string, yourItems []string, theirItems []string) (SendTradeInfo, error) {
 
 	data := []byte(`
 	{"offers":[{"userId":` + strconv.Itoa(UserIDFromCookie(acc)) + `,"userAssetIds":[` + strings.Join(yourItems, ",") + `],"robux":null},{"userId":` + strconv.Itoa(profile.GetIdFromUsername(theirUser).PlayerID) + `,"userAssetIds":[` + strings.Join(theirItems, ",") + `],"robux":null}]}
 	`)
-	req := formatter.FormatRequest(acc, "https://trades.roblox.com/v1/trades/send", "POST", data)
-	req.AddCookie(acc.RobloSecurity)
-	resp, _ := client.Do(req)
-
+	resp := formatter.FormatRequest(acc, "https://trades.roblox.com/v1/trades/send", "POST", data)
 	if resp.StatusCode != http.StatusOK {
 		var Errdata Error
 		err := json.NewDecoder(resp.Body).Decode(&Errdata)
