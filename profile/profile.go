@@ -89,7 +89,7 @@ func SendFriendRequest(username string, acc *account.Account) (error, string) {
 func GetThumbnail(username string) string {
 	return "https://www.roblox.com/headshot-thumbnail/image?userId=" + strconv.Itoa(GetIdFromUsername(username).PlayerID) + "&width=420&height=420&format=png"
 }
-func CheckUser(name string) {
+func CheckUser(name string) NameCheck {
 	data := []byte(`
 	{
 	  "username": "` + name + `",
@@ -97,6 +97,11 @@ func CheckUser(name string) {
 	  "context": "Unknown"
 	}
 	`)
-	_ = formatter.FormatRequest(nil, "https://auth.roblox.com/v1/usernames/validate", "POST", data)
-
+	resp := formatter.FormatRequest(nil, "https://auth.roblox.com/v1/usernames/validate", "POST", data)
+	var NameData NameCheck
+	err := json.NewDecoder(resp.Body).Decode(&NameData)
+	if err != nil {
+		log.Fatalf("Error saving to struct: %v", err)
+	}
+	return NameData
 }

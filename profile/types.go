@@ -47,3 +47,7 @@ type FollowerData struct {
 		DisplayName            string    `json:"displayName"`
 	} `json:"data"`
 }
+type NameCheck struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
