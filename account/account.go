@@ -3,7 +3,6 @@ package account
 import (
 	"net/http"
 )
-
 type Account struct {
 	RobloSecurity *http.Cookie
 }
