@@ -27,6 +27,12 @@ func UserIDFromCookie(acc *account.Account) int {
 	}
 	return data.ID
 }
+func GetTrades(tradeType string, acc *account.Account) error {
+	if tradeType != "outbound" || tradeType != "inbound" {
+		return errors.New("Invalid trade type")
+	}
+	return nil
+}
 func SendTrade(acc *account.Account, theirUser string, yourItems []string, theirItems []string) (SendTradeInfo, error) {
 
 	data := []byte(`
@@ -46,3 +52,5 @@ func SendTrade(acc *account.Account, theirUser string, yourItems []string, their
 	}
 	return SendTradeInfo{}, nil
 }
+
+// func DeclineTrade(acc *account.Account, tradeID int)
