@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"net/http"
 
+	"io/ioutil"
+	"log"
+
 	"github.com/zLeki/Goblox/account"
 	csrf2 "github.com/zLeki/Goblox/csrf"
 )
@@ -16,10 +19,15 @@ func FormatRequest(acc *account.Account, url string, method string, json []byte)
 		csrf, _ := csrf2.GetCSRF(acc)
 		req.Header.Set("X-CSRF-TOKEN", csrf)
 
-		err, _ := client.Do(req)
-		return err
+		resp, _ := client.Do(req)
+		return resp
 	}
 	req.Header.Set("Content-Type", "application/json")
-	err, _ := client.Do(req)
-	return err
+	resp, _ := client.Do(req)
+	iou, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("error", err)
+	}
+	log.Println(string(iou))
+	return resp
 }

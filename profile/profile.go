@@ -3,6 +3,8 @@ package profile
 import (
 	"encoding/json"
 	"errors"
+
+	// "io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -86,4 +88,15 @@ func SendFriendRequest(username string, acc *account.Account) (error, string) {
 }
 func GetThumbnail(username string) string {
 	return "https://www.roblox.com/headshot-thumbnail/image?userId=" + strconv.Itoa(GetIdFromUsername(username).PlayerID) + "&width=420&height=420&format=png"
+}
+func CheckUser(name string) {
+	data := []byte(`
+	{
+	  "username": "` + name + `",
+	  "birthday": "2022-01-12T23:36:12.684Z",
+	  "context": "Unknown"
+	}
+	`)
+	_ = formatter.FormatRequest(nil, "https://auth.roblox.com/v1/usernames/validate", "POST", data)
+
 }
