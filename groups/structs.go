@@ -19,8 +19,8 @@ type GroupInfo struct {
 	Shout              *Shout `json:"shout"`
 }
 type UserData struct {
-	RobloxGroup GroupInfo `json:"group"`
-	RobloxRole  RoleData  `json:"role"`
+	RobloxGroup 	GroupInfo `json:"group"`
+	RobloxRole  	RoleData  `json:"role"`
 }
 type Shout struct {
 	Content string `json:"body"`
@@ -28,8 +28,8 @@ type Shout struct {
 	Updated string `json:"updated"`
 }
 type RoleData struct {
-	Id          int    `json:"id"`
-	Name        string `json:"name"`
-	Rank        int    `json:"rank"`
-	MemberCount int    `json:"memberCount"`
+	Id          	int    `json:"id"`
+	Name        	string `json:"name"`
+	Rank        	int    `json:"rank"`
+	MemberCount 	int    `json:"memberCount"`
 }

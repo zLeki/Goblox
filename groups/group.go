@@ -3,19 +3,18 @@ package groups
 import (
 	"encoding/json"
 	"errors"
+	"github.com/zLeki/Goblox/account"
+	"github.com/zLeki/Goblox/formatter"
 	"io"
+	"log"
 	"net/http"
 	"sort"
 	"strconv"
-
-	"github.com/zLeki/Goblox/account"
-	"github.com/zLeki/Goblox/formatter"
 )
-
 var client http.Client
 
 func UserPayout(userID string, groupID int, amount int, acc *account.Account) error {
-	var payload = []byte(`
+		var payload = []byte(`
 		{
 		  "PayoutType": "FixedAmount",
 		  "Recipients": [
@@ -27,18 +26,22 @@ func UserPayout(userID string, groupID int, amount int, acc *account.Account) er
 		  ]
 		}`)
 
-	resp := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/groups/"+strconv.Itoa(groupID)+"/payouts", "POST", payload)
-
-	if resp.StatusCode == 400 {
-		return errors.New("Incorrect userID or the user is new to the group.")
-	} else if resp.StatusCode == 401 {
-		return errors.New("Incorrect cookie")
-	}
+		req := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/groups/"+strconv.Itoa(groupID)+"/payouts", "POST", payload)
+		req.AddCookie(acc.RobloSecurity)
+		resp, err := client.Do(req)
+		if err != nil {
+			return err
+		}
+		if resp.StatusCode == 400 {
+			return errors.New("Incorrect userID or the user is new to the group.")
+		}else if resp.StatusCode == 401 {
+			return errors.New("Incorrect cookie")
+		}
 	return nil
 }
 func Groupinfo(ID string) *GroupInfo {
-	resp := formatter.FormatRequest(nil, "https://groups.roblox.com/v1/groups/"+ID, "GET", nil)
-
+	req := formatter.FormatRequest(nil, "https://groups.roblox.com/v1/groups/"+ID, "GET", nil)
+	resp, _ := client.Do(req)
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
@@ -51,8 +54,9 @@ func Groupinfo(ID string) *GroupInfo {
 	return data
 }
 func GetUserRoleInGroup(userid int, groupid int, acc *account.Account) (RoleData, error) {
-	resp := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/users/"+strconv.Itoa(userid)+"/groups/roles", "GET", nil)
-
+	req := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/users/"+strconv.Itoa(userid)+"/groups/roles", "GET", nil)
+	req.AddCookie(acc.RobloSecurity)
+	resp, _ := client.Do(req)
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
@@ -63,7 +67,7 @@ func GetUserRoleInGroup(userid int, groupid int, acc *account.Account) (RoleData
 		return RoleData{}, errors.New("Check status code: " + resp.Status)
 	}
 	type userData struct {
-		Data []UserData `json:"data"`
+		Data 			[]UserData `json:"data"`
 	}
 
 	var jsonResponse userData
@@ -86,17 +90,21 @@ func SendShout(acc *account.Account, groupID string, message string) (int, error
 
 	jsondata := []byte(`
 		{
-		  "message": "` + message + `"
+		  "message": "`+message+`"
 		}
 	`)
-	resp := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/groups/"+groupID+"/status", "PATCH", jsondata)
-
+	req := formatter.FormatRequest(acc, "https://groups.roblox.com/v1/groups/"+groupID+"/status", "PATCH", jsondata)
+	req.AddCookie(acc.RobloSecurity)
+	resp, err := client.Do(req)
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
 
 		}
 	}(resp.Body)
+	if err != nil {
+		log.Fatalf("Error while sending request to roblox servers", err)
+	}
 	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
 		return 0, errors.New("You are not authorized to change the shout")
 	}
@@ -104,8 +112,8 @@ func SendShout(acc *account.Account, groupID string, message string) (int, error
 
 }
 func GetRoles(groupID int) []RoleData {
-	resp := formatter.FormatRequest(nil, "https://groups.roblox.com/v1/groups/"+strconv.Itoa(groupID)+"/roles", "GET", nil)
-
+	req := formatter.FormatRequest(nil, "https://groups.roblox.com/v1/groups/"+strconv.Itoa(groupID)+"/roles", "GET", nil)
+	resp, _ := client.Do(req)
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
@@ -113,8 +121,8 @@ func GetRoles(groupID int) []RoleData {
 		}
 	}(resp.Body)
 	type roles struct {
-		GroupId int        `json:"groupId"`
-		Roles   []RoleData `json:"roles"`
+		GroupId 		int `json:"groupId"`
+		Roles   		[]RoleData `json:"roles"`
 	}
 	var GroupRole roles
 	err := json.NewDecoder(resp.Body).Decode(&GroupRole)
