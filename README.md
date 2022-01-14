@@ -40,7 +40,7 @@
 ### Download
 
 `go get github.com/zLeki/Goblox`
-#Requires Go 1.18 (not sure if it works on lower versions)
+##Requires Go 1.18 (not sure if it works on lower versions)
 ### Example
 
 ```go
