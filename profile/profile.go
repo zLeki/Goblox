@@ -1,8 +1,8 @@
 package profile
 
 import (
+	"github.com/zLeki/Goblox/account"
 	"github.com/zLeki/Goblox/formatter"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -19,9 +19,15 @@ func Info(username string) {
 	var data UserData
 	formatter.Decode(data, req)
 }
-func CheckUser(name string) int {
-	ID := GetIdFromUsername(name)
-	resp := formatter.FormatRequest(nil, "https://www.roblox.com/users/"+strconv.Itoa(ID.PlayerID)+"/profile", "GET", nil)
-	return resp.StatusCode
+func CheckUser(name string, acc *account.Account) CheckData {
+	dataBytes := []byte(`
+		{
+			"birthday": "1955-06-07T23:00:00.000Z",
+			"context": "Signup",
+			"username": "`+name+`"
+		}`)
+	resp := formatter.FormatRequest(acc, "https://auth.roblox.com/v1/usernames/validate", "POST", dataBytes)
+	var data CheckData
+	return formatter.Decode(data, resp)
 
 }

@@ -7,7 +7,7 @@ type UserID struct {
 
 }
 type CheckData struct {
-	Code    string `json:"code"`
+	Code    int `json:"code"`
 	Message string `json:"message"`
 }
 type UserData struct {
