@@ -40,18 +40,20 @@
 ### Download
 
 `go get github.com/zLeki/Goblox`
-
+#Requires Go 1.18 (not sure if it works on lower versions)
 ### Example
 
 ```go
 package main
 import (
-
 	"github.com/zLeki/Goblox/account"
 	"github.com/zLeki/Goblox/groups"
 	"log"
+	"io/ioutil"
+	"strings"
+	"strconv"
 )
-func snipe() {
+func snipe(target int) {
 	f, _ := ioutil.ReadFile("ids.txt")
 	list := strings.Split(string(f), "\n")
 	for _, v := range list {
@@ -81,7 +83,7 @@ func main() {
 		log.Println(v.Name)
 	}
     log.Println(profile.Info("xLeki").DisplayName)
-    snipe()
+    snipe(5)
 }
 ```
 
