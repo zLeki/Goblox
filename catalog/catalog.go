@@ -20,30 +20,20 @@ func GetInfo(id int, acc *account.Account) ItemData {
   ]
 }
 `)
-	req := formatter.FormatRequest(acc, "https://catalog.roblox.com/v1/catalog/items/details", "POST", data)
-	req.AddCookie(acc.RobloSecurity)
-	resp, _ := client.Do(req)
+	resp := formatter.FormatRequest(acc, "https://catalog.roblox.com/v1/catalog/items/details", "POST", data)
 	if resp.StatusCode != 200{
 		log.Println(resp.StatusCode)
 		return ItemData{}
 	}
 	var itemData ItemData
-	err := json.NewDecoder(resp.Body).Decode(&itemData)
-	if err != nil {
-		log.Fatalf("Error saving to struct: %v", err)
-	}
-	return itemData
+	return formatter.Decode(itemData, resp)
 
 }
 func ScrapeItems() []int {
-	req := formatter.FormatRequest(nil, "https://catalog.roblox.com/v1/search/items?category=Collectibles&limit=60&subcategory=Collectibles", "GET", nil)
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Println(err)
-	}
+	resp := formatter.FormatRequest(nil, "https://catalog.roblox.com/v1/search/items?category=Collectibles&limit=60&subcategory=Collectibles", "GET", nil)
 	var data ItemsScraped
-	err2 := json.NewDecoder(resp.Body).Decode(&data)
-	if err2 != nil {
+	err := json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
 		log.Fatalf("Error saving to struct: %v", err)
 	}
 	var items []int
