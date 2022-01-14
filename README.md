@@ -38,7 +38,7 @@
 ## Getting Started
 
 ### Download
-##Requires Go 1.18 (not sure if it works on lower versions)
+## Requires Go 1.18 (not sure if it works on lower versions)
 
 `go get github.com/zLeki/Goblox`
 ### Example
