@@ -40,8 +40,9 @@
 ### Download
 
 `git clone github.com/zLeki/Gecko`
-###Example
-<img src="https://imgur.com/88ed063e-a87a-4607-8262-b0b6688c4df4">
+### Example
+![Example](https://imgur.com/88ed063e-a87a-4607-8262-b0b6688c4df4)
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to
