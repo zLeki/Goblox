@@ -7,18 +7,18 @@
 
 <br />
 
-![Gecko](https://i.imgur.com/ycWnfbA.png)
+![Goblox](https://i.ibb.co/WfCGTbX/Untitled.png)
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
 <p align="center">
-    <a href="https://github.com/zLeki/Gecko#usage"><strong>Explore Usage »</strong></a>
+    <a href="https://github.com/zLeki/Goblox#usage"><strong>Explore Usage »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/zLeki/Gecko/issues">Report Bug</a>
+    <a href="https://github.com/zLeki/Goblox/issues">Report Bug</a>
     ·
-    <a href="https://github.com/zLeki/Gecko/issues">Request Feature</a>
+    <a href="https://github.com/zLeki/Goblox/issues">Request Feature</a>
   </p>
 </div>
 
@@ -29,7 +29,7 @@
 ## About The Project
 
 
-**Gecko** is a fast and efficient discord dm spammer and ID scraper
+**Goblox** is a great API Wrapper for roblox api made by developers for developers
 
 
 
@@ -38,10 +38,55 @@
 ## Getting Started
 
 ### Download
+#### Requires Go 1.18 (not sure if it works on lower versions)
 
-`git clone github.com/zLeki/Gecko`
+`go get github.com/zLeki/Goblox`
 ### Example
-![Example](https://i.imgur.com/w9o6r86.png)
+
+```go
+package main
+import (
+	"github.com/zLeki/Goblox/account"
+	"github.com/zLeki/Goblox/groups"
+	"log"
+	"io/ioutil"
+	"strings"
+	"strconv"
+)
+func snipe(target int) {
+	f, _ := ioutil.ReadFile("ids.txt")
+	list := strings.Split(string(f), "\n")
+	for _, v := range list {
+		id, _ := strconv.Atoi(v)
+		price := catalog.GetInfo(id, acc).Data[0].LowestPrice
+		log.Println(price)
+		if price <= target {
+			log.Println("Cheaper then target should purchase Price: ", price)
+		}else{
+			log.Println("Higher then target should not buy. Price: ", price)
+		}
+	}}
+func main() {
+	acc := account.Validate("cookie")
+	log.Println(groups.GetUserRoleInGroup(439403718, 13644831, acc))
+	_, err := groups.SendShout(acc, "13644831", "Hello, World!")
+	if err != nil {
+		log.Println(err)
+	}
+	err2 := groups.UserPayout("439403718", 13644831, 5, acc)
+	if err2 != nil {
+		log.Println(err2)
+	}
+	gi := groups.Groupinfo("13644831")
+	log.Println(gi.Shout.Content, gi.MemberCount, gi.Description)
+	for _, v := range groups.GetRoles(13644831) {
+		log.Println(v.Name)
+	}
+    log.Println(profile.Info("xLeki").DisplayName)
+    snipe(5)
+}
+```
+
 
 ## Contributing
 
@@ -67,14 +112,14 @@ create a pull request. You can also simply open an issue with the tag
 ## License
 
 Distributed under the MIT License. See
-[LICENSE](https://github.com/zLeki/Gecko/blob/main/LICENSE) for more
+[LICENSE](https://github.com/zLeki/Goblox/blob/main/LICENSE) for more
 information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
-- <https://github.com/zLeki/Gecko>
+- <https://github.com/zLeki/Goblox>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
