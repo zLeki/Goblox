@@ -41,7 +41,7 @@
 
 `git clone github.com/zLeki/Gecko`
 ### Example
-![Example](https://imgur.com/88ed063e-a87a-4607-8262-b0b6688c4df4)
+![Example](https://i.imgur.com/w9o6r86.png)
 
 ## Contributing
 
