@@ -13,11 +13,12 @@ func GetIdFromUsername(username string) UserID {
 	var data UserID
 	return formatter.Decode(data, req)
 }
-func Info(username string) {
+func Info(username string) UserData {
 	ID := GetIdFromUsername(username)
 	req := formatter.FormatRequest(nil, "https://users.roblox.com/v1/users/"+strconv.Itoa(ID.PlayerID), "GET", nil)
 	var data UserData
 	formatter.Decode(data, req)
+	return data
 }
 func CheckUser(name string, acc *account.Account) CheckData {
 	dataBytes := []byte(`
