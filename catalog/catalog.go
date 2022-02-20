@@ -2,6 +2,7 @@ package catalog
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/zLeki/Goblox/account"
 	"github.com/zLeki/Goblox/formatter"
 	"log"
@@ -9,7 +10,7 @@ import (
 	"strconv"
 )
 var client http.Client
-func GetInfo(id int, acc *account.Account) ItemData {
+func GetInfo(id int, acc *account.Account) (ItemData, error) {
 	data := []byte(`
 {
   "items": [
@@ -23,10 +24,10 @@ func GetInfo(id int, acc *account.Account) ItemData {
 	resp := formatter.FormatRequest(acc, "https://catalog.roblox.com/v1/catalog/items/details", "POST", data)
 	if resp.StatusCode != 200{
 		log.Println(resp.StatusCode)
-		return ItemData{}
+		return ItemData{}, errors.New("Error getting item info")
 	}
 	var itemData ItemData
-	return formatter.Decode(itemData, resp)
+	return formatter.Decode(itemData, resp), nil
 
 }
 func ScrapeItems() []int {
@@ -37,9 +38,4 @@ func ScrapeItems() []int {
 		log.Fatalf("Error saving to struct: %v", err)
 	}
 	var items []int
-	for _, v := range data.Data {
-		items = append(items, v.ID)
-	}
-	return items
-}
-
+	for _, v := range
