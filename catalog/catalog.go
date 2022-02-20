@@ -9,7 +9,9 @@ import (
 	"net/http"
 	"strconv"
 )
+
 var client http.Client
+
 func GetInfo(id int, acc *account.Account) (ItemData, error) {
 	data := []byte(`
 {
@@ -22,7 +24,7 @@ func GetInfo(id int, acc *account.Account) (ItemData, error) {
 }
 `)
 	resp := formatter.FormatRequest(acc, "https://catalog.roblox.com/v1/catalog/items/details", "POST", data)
-	if resp.StatusCode != 200{
+	if resp.StatusCode != 200 {
 		return ItemData{}, errors.New("Error getting item info")
 	}
 	var itemData ItemData
