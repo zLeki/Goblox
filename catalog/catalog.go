@@ -23,10 +23,10 @@ func GetInfo(id int, acc *account.Account) (ItemData, error) {
 `)
 	resp := formatter.FormatRequest(acc, "https://catalog.roblox.com/v1/catalog/items/details", "POST", data)
 	if resp.StatusCode != 200{
-		log.Println(resp.StatusCode)
 		return ItemData{}, errors.New("Error getting item info")
 	}
 	var itemData ItemData
+	log.Println(resp.Body)
 	return formatter.Decode(itemData, resp), nil
 
 }
@@ -37,5 +37,5 @@ func ScrapeItems() []int {
 	if err != nil {
 		log.Fatalf("Error saving to struct: %v", err)
 	}
-	var items []int
-	for _, v := range
+	return nil //TODO
+}
