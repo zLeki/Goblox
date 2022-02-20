@@ -30,12 +30,4 @@ func GetInfo(id int, acc *account.Account) (ItemData, error) {
 	return formatter.Decode(itemData, resp), nil
 
 }
-func ScrapeItems() []int {
-	resp := formatter.FormatRequest(nil, "https://catalog.roblox.com/v1/search/items?category=Collectibles&limit=60&subcategory=Collectibles", "GET", nil)
-	var data ItemsScraped
-	err := json.NewDecoder(resp.Body).Decode(&data)
-	if err != nil {
-		log.Fatalf("Error saving to struct: %v", err)
-	}
-	return nil //TODO
-}
+
