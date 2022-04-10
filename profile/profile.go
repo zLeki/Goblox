@@ -8,6 +8,7 @@ import (
 )
 
 var client http.Client
+
 func GetIdFromUsername(username string) UserID {
 	req := formatter.FormatRequest(nil, "https://api.roblox.com/users/get-by-username?username="+username, "GET", nil)
 	var data UserID
@@ -25,7 +26,7 @@ func CheckUser(name string, acc *account.Account) CheckData {
 		{
 			"birthday": "1955-06-07T23:00:00.000Z",
 			"context": "Signup",
-			"username": "`+name+`"
+			"username": "` + name + `"
 		}`)
 	resp := formatter.FormatRequest(acc, "https://auth.roblox.com/v1/usernames/validate", "POST", dataBytes)
 	var data CheckData
